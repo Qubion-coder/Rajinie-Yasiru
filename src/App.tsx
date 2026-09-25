@@ -427,8 +427,8 @@ export default function WeddingInvitation() {
 
             {/* Hero Section */}
             <section 
-              className="min-h-[100dvh] w-full flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-center bg-contain bg-no-repeat"
-              style={{ backgroundImage: "url('/ChatGPT Image Sep 25, 2026, 05_41_08 PM.png')" }}
+              className="min-h-[100dvh] w-full flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-center bg-cover"
+              style={{ backgroundImage: "url('/ChatGPT Image Aug 29, 2026, 04_06_21 AM.png')" }}
             >
               {/* Background texture (optional, keep for effect) */}
               <div className="absolute inset-0 opacity-[0.03] paper-grain" />
