@@ -203,7 +203,7 @@ export default function WeddingInvitation() {
   const hasGuest = guestPrefix && guestName;
 
   // Form State
-  const [rsvpData, setRsvpData] = useState({ name: guestName || "", guests: "1", dietary: "" });
+  const [rsvpData, setRsvpData] = useState({ name: guestName || "", guests: "1", cocktailHour: "Yes", dietary: "" });
   const [wishData, setWishData] = useState({ name: guestName || "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<null | "rsvp_success" | "wish_success" | "error">(null);
@@ -225,6 +225,7 @@ export default function WeddingInvitation() {
       const fieldMapping: Record<string, string> = {
         name: "Name",
         guests: "Guests",
+        cocktailHour: "Attending Cocktail Hour",
         dietary: "Dietary Notes",
         message: "Message"
       };
@@ -246,7 +247,7 @@ export default function WeddingInvitation() {
       setSubmitStatus(`${formName}_success` as any);
 
       // Reset forms
-      if (formName === "rsvp") setRsvpData({ name: guestName || "", guests: "1", dietary: "" });
+      if (formName === "rsvp") setRsvpData({ name: guestName || "", guests: "1", cocktailHour: "Yes", dietary: "" });
       else setWishData({ name: guestName || "", message: "" });
 
     } catch (error) {
@@ -880,6 +881,23 @@ export default function WeddingInvitation() {
                             <option value="3" className="bg-[#18181B] text-white">3 Guests</option>
                             <option value="4" className="bg-[#18181B] text-white">4 Guests</option>
                             <option value="0" className="bg-[#18181B] text-[#D4AF37]">Regretfully Decline</option>
+                          </select>
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                            <div className="w-2 h-2 border-r border-b border-theme-300 rotate-45 transform -translate-y-[25%]" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3">
+                        <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] ml-2">Attending Cocktail Hour?</label>
+                        <div className="relative">
+                          <select
+                            value={rsvpData.cocktailHour}
+                            onChange={(e) => setRsvpData({ ...rsvpData, cocktailHour: e.target.value })}
+                            className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-[19px] md:text-xl tracking-wide appearance-none cursor-pointer"
+                          >
+                            <option value="Yes" className="bg-[#18181B] text-white">Yes, I'll be there!</option>
+                            <option value="No" className="bg-[#18181B] text-white">No, sadly I can't</option>
                           </select>
                           <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                             <div className="w-2 h-2 border-r border-b border-theme-300 rotate-45 transform -translate-y-[25%]" />
