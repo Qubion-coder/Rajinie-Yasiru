@@ -202,7 +202,7 @@ export default function WeddingInvitation() {
   const hasGuest = guestPrefix && guestName;
 
   // Form State
-  const [rsvpData, setRsvpData] = useState({ name: guestName || "", guests: "1", cocktailHour: "Yes", dietary: "" });
+  const [rsvpData, setRsvpData] = useState({ name: guestName || "", attending: "", guests: "1", cocktailHour: "Yes", dietary: "" });
   const [wishData, setWishData] = useState({ name: guestName || "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<null | "rsvp_success" | "wish_success" | "error">(null);
@@ -223,6 +223,7 @@ export default function WeddingInvitation() {
       // Explicit mapping of keys to Sheet Headers
       const fieldMapping: Record<string, string> = {
         name: "Name",
+        attending: "Attending",
         guests: "Guests",
         cocktailHour: "Attending Cocktail Hour",
         dietary: "Dietary Notes",
@@ -231,6 +232,18 @@ export default function WeddingInvitation() {
 
       Object.keys(data).forEach(key => {
         const headerName = fieldMapping[key] || key;
+
+        if (formName === "rsvp" && data.attending === "Decline") {
+          if (key === "guests") {
+            params.append(headerName, "0");
+            return;
+          }
+          if (key === "cocktailHour") {
+            params.append(headerName, "No");
+            return;
+          }
+        }
+
         params.append(headerName, data[key]);
       });
 
@@ -246,7 +259,7 @@ export default function WeddingInvitation() {
       setSubmitStatus(`${formName}_success` as any);
 
       // Reset forms
-      if (formName === "rsvp") setRsvpData({ name: guestName || "", guests: "1", cocktailHour: "Yes", dietary: "" });
+      if (formName === "rsvp") setRsvpData({ name: guestName || "", attending: "", guests: "1", cocktailHour: "Yes", dietary: "" });
       else setWishData({ name: guestName || "", message: "" });
 
     } catch (error) {
@@ -426,7 +439,7 @@ export default function WeddingInvitation() {
             </motion.button>
 
             {/* Hero Section */}
-            <section 
+            <section
               className="min-h-[100dvh] w-full flex items-center justify-center p-4 md:p-12 relative overflow-hidden bg-center bg-cover"
               style={{ backgroundImage: "url('/ChatGPT Image Aug 29, 2026, 04_06_21 AM.png')" }}
             >
@@ -868,18 +881,17 @@ export default function WeddingInvitation() {
                       </div>
 
                       <div className="space-y-3">
-                        <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] ml-2">Guests</label>
+                        <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] ml-2">Will you attend?</label>
                         <div className="relative">
                           <select
-                            value={rsvpData.guests}
-                            onChange={(e) => setRsvpData({ ...rsvpData, guests: e.target.value })}
+                            value={rsvpData.attending}
+                            onChange={(e) => setRsvpData({ ...rsvpData, attending: e.target.value })}
+                            required
                             className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-[19px] md:text-xl tracking-wide appearance-none cursor-pointer"
                           >
-                            <option value="1" className="bg-[#18181B] text-white">1 Guest (Just Me)</option>
-                            <option value="2" className="bg-[#18181B] text-white">2 Guests</option>
-                            <option value="3" className="bg-[#18181B] text-white">3 Guests</option>
-                            <option value="4" className="bg-[#18181B] text-white">4 Guests</option>
-                            <option value="0" className="bg-[#18181B] text-[#D4AF37]">Regretfully Decline</option>
+                            <option value="" disabled className="bg-[#18181B] text-white/50">Please Select</option>
+                            <option value="Accept" className="bg-[#18181B] text-white">Accept with Joy</option>
+                            <option value="Decline" className="bg-[#18181B] text-[#D4AF37]">Regretfully Decline</option>
                           </select>
                           <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
                             <div className="w-2 h-2 border-r border-b border-theme-300 rotate-45 transform -translate-y-[25%]" />
@@ -887,22 +899,45 @@ export default function WeddingInvitation() {
                         </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] ml-2">Attending Cocktail Hour?</label>
-                        <div className="relative">
-                          <select
-                            value={rsvpData.cocktailHour}
-                            onChange={(e) => setRsvpData({ ...rsvpData, cocktailHour: e.target.value })}
-                            className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-[19px] md:text-xl tracking-wide appearance-none cursor-pointer"
-                          >
-                            <option value="Yes" className="bg-[#18181B] text-white">Yes, I'll be there!</option>
-                            <option value="No" className="bg-[#18181B] text-white">No, sadly I can't</option>
-                          </select>
-                          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-                            <div className="w-2 h-2 border-r border-b border-theme-300 rotate-45 transform -translate-y-[25%]" />
+                      {rsvpData.attending === "Accept" && (
+                        <>
+                          <div className="space-y-3">
+                            <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] ml-2">Guests</label>
+                            <div className="relative">
+                              <select
+                                value={rsvpData.guests}
+                                onChange={(e) => setRsvpData({ ...rsvpData, guests: e.target.value })}
+                                className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-[19px] md:text-xl tracking-wide appearance-none cursor-pointer"
+                              >
+                                <option value="1" className="bg-[#18181B] text-white">1 Guest (Just Me)</option>
+                                <option value="2" className="bg-[#18181B] text-white">2 Guests</option>
+                                <option value="3" className="bg-[#18181B] text-white">3 Guests</option>
+                                <option value="4" className="bg-[#18181B] text-white">4 Guests</option>
+                              </select>
+                              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <div className="w-2 h-2 border-r border-b border-theme-300 rotate-45 transform -translate-y-[25%]" />
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
+
+                          <div className="space-y-3">
+                            <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] ml-2">Attending Cocktail Hour?</label>
+                            <div className="relative">
+                              <select
+                                value={rsvpData.cocktailHour}
+                                onChange={(e) => setRsvpData({ ...rsvpData, cocktailHour: e.target.value })}
+                                className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-[19px] md:text-xl tracking-wide appearance-none cursor-pointer"
+                              >
+                                <option value="Yes" className="bg-[#18181B] text-white">Yes, I'll be there!</option>
+                                <option value="No" className="bg-[#18181B] text-white">No, sadly I can't</option>
+                              </select>
+                              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                <div className="w-2 h-2 border-r border-b border-theme-300 rotate-45 transform -translate-y-[25%]" />
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
 
                       <div className="space-y-3">
                         <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] ml-2">Wish</label>
