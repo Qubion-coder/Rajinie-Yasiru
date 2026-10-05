@@ -202,7 +202,7 @@ export default function WeddingInvitation() {
   const hasGuest = guestPrefix && guestName;
 
   // Form State
-  const [rsvpData, setRsvpData] = useState({ name: guestName || "", attending: "", guests: "1", cocktailHour: "Yes", dietary: "" });
+  const [rsvpData, setRsvpData] = useState({ name: guestName || "", attending: "", guests: "1", cocktailHour: "Yes", wishes: "" });
   const [wishData, setWishData] = useState({ name: guestName || "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<null | "rsvp_success" | "wish_success" | "error">(null);
@@ -226,7 +226,7 @@ export default function WeddingInvitation() {
         attending: "Attending",
         guests: "Guests",
         cocktailHour: "Attending Cocktail Hour",
-        dietary: "Dietary Notes",
+        wishes: "Wishes",
         message: "Message"
       };
 
@@ -259,7 +259,7 @@ export default function WeddingInvitation() {
       setSubmitStatus(`${formName}_success` as any);
 
       // Reset forms
-      if (formName === "rsvp") setRsvpData({ name: guestName || "", attending: "", guests: "1", cocktailHour: "Yes", dietary: "" });
+      if (formName === "rsvp") setRsvpData({ name: guestName || "", attending: "", guests: "1", cocktailHour: "Yes", wishes: "" });
       else setWishData({ name: guestName || "", message: "" });
 
     } catch (error) {
@@ -943,8 +943,8 @@ export default function WeddingInvitation() {
                         <label className="text-[8px] md:text-[10px] uppercase tracking-[0.3em] font-bold text-[#D4AF37] ml-2">Wish</label>
                         <input
                           type="text"
-                          value={rsvpData.dietary}
-                          onChange={(e) => setRsvpData({ ...rsvpData, dietary: e.target.value })}
+                          value={rsvpData.wishes}
+                          onChange={(e) => setRsvpData({ ...rsvpData, wishes: e.target.value })}
                           placeholder="Your wishes for the couple..."
                           className="w-full bg-transparent border-b border-white/20 px-2 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-theme-300 transition-colors font-cinzel text-[19px] md:text-xl tracking-wide"
                         />
